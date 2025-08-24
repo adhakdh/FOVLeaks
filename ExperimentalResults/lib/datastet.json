@@ -1,0 +1,23 @@
+{
+    "Dataset": {
+        "8.2_OverallPerformance": "1IXLugVaii-V2bEU-7LBogzbfMJg2hfEK",
+        "8.3.1_ImpactsofSingle-sideController": "1xp2OUGjXjJ-QI5S1HN-cVMrGyljBXdWi",
+        "8.3.2_ImpactsofIntensePhysicalActivity": "1vQzcik3NkXbK0M2ewOawuVw6aVYGT7k3",
+        "8.3.3_ImpactsofDynamicBehavior": "1YE7OPY9hmoBSuvB3MtpXEGW-9UzsLxg8",
+        "8.3.4_ImpactsofBiometricLong-termVariability": "11Mv8mpS-disSvA1-_qNMKLuEyhj0Otqr",
+        "8.3.5_ImpactsofVRDevices": "1kCn61gomhNkZS8PVPVaiJl9snTgAhJT_",
+        "8.3.6_ImpactsofGenetics": "1fNPMCUdNI1juplRj2n_jTcluAi7_Wz3g",
+        "8.3.7_ImpactsofVotingMechanism": "1X1ia24w_xA9kYf4QE1Msx19pJ_V1Blxs",
+        "Authentication": "1FN5THLuAv5PkRDpTMnxqtpxprBYL7cOe",
+        "SignalRefinementAndConversion": "15wuQUutIgoqGo7YfdbFJZxC5e8TxPg8G",
+        "9.2_ImpersonationAttack": "13ugOX5FS_ft6H08-g8u3bAsxrnumaiTK",
+        "9.3_ReplayAttack": "1wGGlBd3F08WU2rY5nWdCj0R6dyRjyE-d",
+        "9.4_SpoofingAttack": "1YmOGy7x2MeP7Dy2Vvjl9gxaGX4cFJN5g"
+    },
+    "Model": {
+        "8.2_OverallPerformance": "1Nat2oBoDx6u3TBlgNlYPgSf0-D8Ab_6y",
+        "8.3.5_ImpactsofVRDevices": "1Ml4urOt4bhlPFzMwDZfHCHM9UNA--mAw",
+        "8.3.6_ImpactsofGenetics": "1uYd8jnBfcXyMa40v8qQyCOcD03IBCM8n",
+        "VRapp": "1QB-8-mDCRSSVaFsE0zXee9U_M8Ng0LDG"
+    }
+}
