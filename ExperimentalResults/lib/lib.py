@@ -3,6 +3,54 @@ from scipy.spatial.transform import Rotation as R
 import os
 import re
 import json
+import matplotlib.pyplot as plt
+
+def plot_figure(ALL_intersection_point_list, keyboard_on_xy, keyboard_key=None):
+    key_name = keyboard_key
+    # 绘制二维图形
+    plt.figure(figsize=(10, 8))
+    # 绘制原始位置
+    for idx, intersection_point in enumerate(ALL_intersection_point_list, start=1):
+        x, y = intersection_point[0], intersection_point[1]
+        plt.scatter(x, y, color='blue')
+        plt.text(x - 0.005, y - 0.005, str(idx), fontsize=9, color='black')  # 调整偏移和字体
+
+    plt.scatter(ALL_intersection_point_list[-1][0], ALL_intersection_point_list[-1][1], color='green')
+    # print("---number of point----", len(ALL_intersection_point_list))
+
+    # 绘制键名
+    for i, (x, y, z) in enumerate(keyboard_on_xy):
+        if i < len(key_name):  # 确保不会越界
+            plt.text(x, y, key_name[i], fontsize=10, color='black', alpha=0.6, ha='center', va='center')
+
+
+    # ==== 绘制键盘外框 ====
+    # 通过 Q (0), W (1), A (11) 的坐标来估算键宽和键高
+    key_dx = 0.5 * abs(keyboard_on_xy[0][0] - keyboard_on_xy[1][0])
+    key_dy = 0.5 * abs(keyboard_on_xy[0][1] - keyboard_on_xy[11][1])
+
+    for i, (x, y, z) in enumerate(keyboard_on_xy):
+        center = np.array([x, y])
+        corners = [
+            center + [-key_dx, -key_dy],
+            center + [ key_dx, -key_dy],
+            center + [ key_dx,  key_dy],
+            center + [-key_dx,  key_dy],
+            center + [-key_dx, -key_dy]  # 闭合
+        ]
+        corners = np.array(corners)
+        plt.plot(corners[:, 0], corners[:, 1], color='blue', alpha=0.5)
+
+    # 设置标签和标题
+    plt.xlabel('X axis')
+    plt.ylabel('Y axis')
+    plt.title('Rotation Around Y Axis')
+    plt.grid(True)
+    plt.axis('equal')             # 保持比例
+    plt.gca().invert_xaxis()      # 👉 x 轴反转
+    # plt.gca().invert_yaxis()      # 👉 y 轴反转
+    plt.show()
+
 
 
 def cal_file_accuracy_website(Result_dict):
@@ -734,7 +782,6 @@ def save_stare_when_call_keyboard(head_data_dic, events, output_path='../lib/sav
         raise ValueError("Insufficient events detected for look_up or look_down.")
         return
 
-    
     look_up_sorted = sorted(events['look_up'], key=lambda x: x[0])
     look_down_sorted = sorted(events['look_down'], key=lambda x: x[0])
 
@@ -761,13 +808,45 @@ def save_stare_when_call_keyboard(head_data_dic, events, output_path='../lib/sav
             j += 1
         elif down_start <= up_end:
             j += 1  
+    
 
     if selected_data_dic["IMUTime"]:
         with open(output_path, 'w') as json_file:
             json.dump(selected_data_dic, json_file)
-    else:
-        print("No valid segments found between look_up and look_down.")
-        exit()
+
+
+    # else:
+    #     print("No valid segments found between look_up and look_down.")
+
+
+# def save_stare_when_input(head_data_dic, events, output_path='../lib/savedata/stare_when_input.json'):
+#     if not events['look_up'] or not events['look_down'] or not events['stare']:
+#         raise ValueError("Insufficient events detected for look_up, look_down, or stare.")
+#         return
+
+    
+    
+#     last_lookdown_end = max(end for _, end in events['look_down'])
+
+    
+#     selected_data_dic = {
+#         "IMUTime": [],
+#         "Head_Z_direction": [],
+#         "Head_position": [],
+#         "Head_orientation": []
+#     }
+
+    
+#     for start, end in events['stare']:
+#         if start > last_lookdown_end:
+#             selected_data_dic["IMUTime"].extend(head_data_dic["IMUTime"][start:end])
+#             selected_data_dic["Head_Z_direction"].extend(head_data_dic["Head_Z_direction"][start:end])
+#             selected_data_dic["Head_position"].extend(head_data_dic["Head_position"][start:end])
+#             selected_data_dic["Head_orientation"].extend(head_data_dic["Head_orientation"][start:end])
+
+#     if selected_data_dic["IMUTime"]:  
+#         with open(output_path, 'w') as json_file:
+#             json.dump(selected_data_dic, json_file)
 
 
 def save_stare_when_input(head_data_dic, events, output_path='../lib/savedata/stare_when_input.json'):
@@ -775,15 +854,15 @@ def save_stare_when_input(head_data_dic, events, output_path='../lib/savedata/st
         raise ValueError("Insufficient events detected for look_up, look_down, or stare.")
         return
 
-    
-    
-    
-    
+    # 收集 look_up的数据
+    # print( "--11----",events['look_up'][-1])
+    # for start, end in events['look_up']:
+    #     print("-------events['look_up'] ------", head_data_dic["IMUTime"][start],head_data_dic["IMUTime"][end])
 
-    
+    # 找到最后一次 look_down 的结束位置
     last_lookdown_end = max(end for _, end in events['look_down'])
 
-    
+    # 创建一个新的字典来保存所需的数据
     selected_data_dic = {
         "IMUTime": [],
         "Head_Z_direction": [],
@@ -791,7 +870,7 @@ def save_stare_when_input(head_data_dic, events, output_path='../lib/savedata/st
         "Head_orientation": []
     }
 
-    
+    # 收集 stare 中在 look_down 之后发生的时间段的数据
     for start, end in events['stare']:
         if start > last_lookdown_end:
             selected_data_dic["IMUTime"].extend(head_data_dic["IMUTime"][start:end])
@@ -799,7 +878,11 @@ def save_stare_when_input(head_data_dic, events, output_path='../lib/savedata/st
             selected_data_dic["Head_position"].extend(head_data_dic["Head_position"][start:end])
             selected_data_dic["Head_orientation"].extend(head_data_dic["Head_orientation"][start:end])
 
-    if selected_data_dic["IMUTime"]:  
+    # print("--------------hfl", selected_data_dic["IMUTime"])
+    # exit()
+
+
+    if selected_data_dic["IMUTime"]:  # 检查是否有数据
         with open(output_path, 'w') as json_file:
             json.dump(selected_data_dic, json_file)
 

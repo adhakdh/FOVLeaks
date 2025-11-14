@@ -4,13 +4,17 @@ from lib import read_head_data, compute_derivative, save_stare_when_call_keyboar
 
 def test1_main(file_path, wether_plot=0):
     head_data_dic = read_head_data(file_path)     
-    times = head_data_dic["IMUTime"] 
-    z_dirs = np.array(head_data_dic["Head_Z_direction"])
+    times = head_data_dic["IMUTime"]
+    if "pico" in file_path.lower() or "vive" in file_path.lower():
+        print("-----------------", file_path)
+        z_dirs = -np.array(head_data_dic["Head_Z_direction"])
+    else:
+        z_dirs = np.array(head_data_dic["Head_Z_direction"])
     derivative, _ = compute_derivative(z_dirs, times)      
-    events, dy_dt = detect_events(z_dirs, derivative, times)   
+    events, dy_dt = detect_events(z_dirs, derivative, times)
     try:
-        save_events(head_data_dic, events)      
-        save_stare_when_input(head_data_dic, events)      
+        save_events(head_data_dic, events)
+        save_stare_when_input(head_data_dic, events)    
         save_stare_when_call_keyboard(head_data_dic, events)
     except:
         raise ValueError("error.")
